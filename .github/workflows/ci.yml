@@ -24,7 +24,7 @@ jobs:
           java-version: '21'
       - uses: gradle/actions/setup-gradle@v4
       - name: Build and test on PostgreSQL
-        working-directory: projects/expense-approval-system/backend
+        working-directory: backend
         env:
           TEST_DB_URL: jdbc:postgresql://localhost:5432/expenses_test
           TEST_DB_USER: expense
@@ -34,14 +34,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: projects/expense-approval-system/frontend
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: npm
-          cache-dependency-path: projects/expense-approval-system/frontend/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npm run build
       - run: npm test
@@ -59,7 +59,6 @@ jobs:
         with:
           node-version: '24'
       - name: Start infrastructure
-        working-directory: projects/expense-approval-system
         run: |
           docker compose up -d
           for attempt in $(seq 1 90); do
@@ -69,7 +68,7 @@ jobs:
           docker compose logs
           exit 1
       - name: Build and start backend
-        working-directory: projects/expense-approval-system/backend
+        working-directory: backend
         run: |
           ./gradlew bootJar
           java -jar build/libs/expense-approval-0.1.0.jar --spring.profiles.active=local > /tmp/backend.log 2>&1 &
@@ -80,7 +79,7 @@ jobs:
           cat /tmp/backend.log
           exit 1
       - name: E2E with Keycloak
-        working-directory: projects/expense-approval-system/frontend
+        working-directory: frontend
         run: |
           npm ci
           npx playwright install --with-deps chromium
@@ -89,9 +88,9 @@ jobs:
         if: failure()
         run: |
           cat /tmp/backend.log || true
-          docker compose -f projects/expense-approval-system/compose.yaml logs
+          docker compose -f compose.yaml logs
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-traces
-          path: projects/expense-approval-system/frontend/test-results
+          path: frontend/test-results

@@ -452,38 +452,29 @@ GitHub Actionsを利用する。
 
 # 8. リポジトリ構成
 
-今回のリポジトリは講座単位で管理する。
+このリポジトリは経費精算・承認アプリケーション単位で管理する。
 
-推奨リポジトリ名：
-
-`reviewing-ai-generated-code`
-
-初期構成：
+バックエンド、フロントエンド、インフラストラクチャをリポジトリルート直下に配置する。
 
 ```text
-reviewing-ai-generated-code/
+udemy-ai-spring-boot-react-expense-approval-app/
 ├── README.md
-├── projects/
-│   └── expense-approval-system/
-│       ├── docs/
-│       │   ├── PRODUCT_SPEC.md
-│       │   ├── TECHNICAL_DESIGN.md
-│       │   └── DECISIONS.md
-│       ├── frontend/
-│       ├── backend/
-│       ├── infra/
-│       │   └── keycloak/
-│       ├── compose.yaml
-│       └── README.md
-├── exercises/
+├── docs/
+│   ├── PRODUCT_SPEC.md
+│   ├── TECHNICAL_DESIGN.md
+│   ├── DECISIONS.md
+│   └── VALIDATION.md
+├── frontend/
+├── backend/
+├── infra/
+│   └── keycloak/
+├── compose.yaml
 └── .github/
     └── workflows/
         └── ci.yml
 ```
 
-ルートのREADMEは講座全体の案内とする。
-
-アプリケーションのREADMEには、開発環境、起動方法、テスト方法、テストユーザーを記載する。
+ルートのREADMEに、開発環境、起動方法、テスト方法、テストユーザーを記載する。
 
 `DECISIONS.md` には、実装時に採用した重要な設計判断と理由を記録する。
 

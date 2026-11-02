@@ -1,6 +1,6 @@
 # 実装時の設計判断
 
-1. **構成**：仕様の推奨に合わせて `projects/expense-approval-system` に実装。既存のルート `docs` を仕様の正本として保持する。
+1. **構成**：単一アプリのリポジトリとして、ルート直下に `backend`・`frontend`・`infra`・`compose.yaml` を配置する。仕様・設計判断・検証記録は `docs` にまとめ、起動手順はルートの `README.md` に記載する。
 2. **バージョン**：Spring Boot 4.1.2 / Java 21 / Gradle Wrapper 8.14.3。安定版を固定。フロントはpackage.jsonで直接依存を固定しlockfileを管理する。
 3. **認証**：Spring Security oauth2Login のBFF。固定IssuerとsubjectでDB従業員へ紐付ける。メールやIdPロールで業務権限を決めない。未登録・無効ユーザーを拒否する。
 4. **CSRF**：標準のHttpSessionCsrfTokenRepositoryとBREACH対策付きトークンを使用。`GET /api/csrf`が遅延トークンを実体化してJSONで返し、SPAは変更操作ごとに再取得する。トークンをCookieやWeb Storageに保持しない。APIの未認証は401、CSRF不正は403。

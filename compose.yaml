@@ -1,3 +1,4 @@
+name: expense-approval-system
 services:
   postgres:
     image: postgres:17.6
