@@ -1,0 +1,10 @@
+.DS_Store
+.gradle/
+build/
+node_modules/
+dist/
+playwright-report/
+test-results/
+.env
+*.log
+*.tsbuildinfo

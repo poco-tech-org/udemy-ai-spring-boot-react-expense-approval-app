@@ -1,0 +1,113 @@
+{
+  "realm": "expense-training",
+  "enabled": true,
+  "sslRequired": "external",
+  "clients": [
+    {
+      "clientId": "expense-app",
+      "secret": "${EXPENSE_CLIENT_SECRET}",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:5173/login/oauth2/code/keycloak"
+      ],
+      "webOrigins": [
+        "http://localhost:5173"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "10000000-0000-0000-0000-000000000001",
+      "username": "manager-a",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "健一",
+      "lastName": "サンプル",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "local-password",
+          "temporary": false
+        }
+      ],
+      "email": "manager-a@example.test",
+      "requiredActions": []
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000002",
+      "username": "manager-b",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "美咲",
+      "lastName": "サンプル",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "local-password",
+          "temporary": false
+        }
+      ],
+      "email": "manager-b@example.test",
+      "requiredActions": []
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000003",
+      "username": "accounting-a",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "結衣",
+      "lastName": "サンプル",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "local-password",
+          "temporary": false
+        }
+      ],
+      "email": "accounting-a@example.test",
+      "requiredActions": []
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000004",
+      "username": "employee-a",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "太郎",
+      "lastName": "サンプル",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "local-password",
+          "temporary": false
+        }
+      ],
+      "email": "employee-a@example.test",
+      "requiredActions": []
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000005",
+      "username": "employee-b",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "花",
+      "lastName": "サンプル",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "local-password",
+          "temporary": false
+        }
+      ],
+      "email": "employee-b@example.test",
+      "requiredActions": []
+    }
+  ],
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "ja",
+    "en"
+  ],
+  "defaultLocale": "ja"
+}
