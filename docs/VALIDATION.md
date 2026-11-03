@@ -26,3 +26,11 @@ E2Eは独立ブラウザコンテキストで以下を確認。
 GitHub Actionsの定義は追加済み。リモートのActions実行はこの作業では行っていない。再現コマンドはアプリREADMEを参照。
 
 リポジトリルートへの構成変更後も、Compose設定の検証、両アプリのビルド、バックエンド13件・フロント5件・E2E2件の再実行に成功。既存のPostgreSQLボリュームを引き継ぎ、KeycloakのマウントとViteの起動元を新パスへ更新した。
+
+## 2026-11-03 CI失敗の調査・修正
+
+[GitHub Actions run 41461443241](https://github.com/poco-tech-org/udemy-ai-spring-boot-react-expense-approval-app/actions/runs/41461443241) は backend が失敗し、frontend と e2e は成功。backend のテスト起動時に、アプリ設定から引き継いだ issuer-uri に対する OIDC discovery が実行され、Keycloak 未起動のため13件すべてが失敗していた。以前のローカル検証では Keycloak が動いていたため、この依存を検出できていなかった。
+
+同じ失敗を、到達不能な `OIDC_ISSUER=http://127.0.0.1:1/realms/unavailable` を指定して再現。テスト専用の ClientRegistrationRepository をネットワーク探索なしで構築するよう修正し、同条件で H2 と PostgreSQL の各13件、および bootJar が成功することを確認した。
+
+CI の backend ジョブにも到達不能な issuer を指定し、OIDC discovery への依存が再混入すれば失敗する構成にした。失敗時はバックエンドのテストレポートをartifactとして保存する。修正後のリモートCI結果はpush後に別途確認する。

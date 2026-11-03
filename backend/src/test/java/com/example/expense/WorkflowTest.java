@@ -11,7 +11,14 @@ import java.util.concurrent.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.OidcLoginRequestPostProcessor;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -21,14 +28,34 @@ import org.springframework.transaction.support.TransactionTemplate;
     properties = {
       "spring.datasource.url=${TEST_DB_URL:jdbc:h2:mem:workflow;MODE=PostgreSQL;DB_CLOSE_DELAY=-1}",
       "spring.datasource.username=${TEST_DB_USER:sa}",
-      "spring.datasource.password=${TEST_DB_PASSWORD:}",
-      "spring.security.oauth2.client.provider.keycloak.authorization-uri=http://localhost:8180/auth",
-      "spring.security.oauth2.client.provider.keycloak.token-uri=http://localhost:8180/token",
-      "spring.security.oauth2.client.provider.keycloak.jwk-set-uri=http://localhost:8180/certs",
-      "spring.security.oauth2.client.provider.keycloak.user-info-uri=http://localhost:8180/userinfo"
+      "spring.datasource.password=${TEST_DB_PASSWORD:}"
     })
 @AutoConfigureMockMvc
+@Import(WorkflowTest.OidcTestConfiguration.class)
 class WorkflowTest {
+  @TestConfiguration(proxyBeanMethods = false)
+  static class OidcTestConfiguration {
+    @Bean
+    ClientRegistrationRepository clientRegistrationRepository() {
+      // Build metadata locally: issuer-uri auto-configuration performs discovery even
+      // when endpoint URLs are specified. HTTP authentication is simulated with oidcLogin().
+      return new InMemoryClientRegistrationRepository(
+          ClientRegistration.withRegistrationId("keycloak")
+              .clientId("expense-test")
+              .clientSecret("test-only")
+              .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+              .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+              .scope("openid", "profile")
+              .issuerUri("http://localhost:8180/realms/expense-training")
+              .authorizationUri("http://127.0.0.1:1/auth")
+              .tokenUri("http://127.0.0.1:1/token")
+              .jwkSetUri("http://127.0.0.1:1/certs")
+              .userInfoUri("http://127.0.0.1:1/userinfo")
+              .userNameAttributeName("sub")
+              .build());
+    }
+  }
+
   @Autowired ExpenseService service;
   @Autowired EmployeeRepository employees;
   @Autowired ExpenseRepository expenses;
